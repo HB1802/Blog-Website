@@ -1,11 +1,12 @@
+
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
 
 router = DefaultRouter()
+router.register(r'', views.ArticleViewSet, basename='article')
 
-router.register(r'articles', views.ArticleViewSet, basename='article')
-
+# The DefaultRouter automatically appends slashes to URLs
 urlpatterns = [
     path('', include(router.urls)),
 ]

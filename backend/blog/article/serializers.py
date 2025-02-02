@@ -18,3 +18,6 @@ class ArticleSerializer(serializers.ModelSerializer):
             'created_at', 'read_time', 'author'
         ]
         read_only_fields = ['slug', 'status', 'author']
+        extra_kwargs = {
+            'featured_image': {'required': False}
+        }

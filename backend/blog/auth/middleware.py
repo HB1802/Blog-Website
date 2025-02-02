@@ -11,11 +11,25 @@ class JWTAuthentication(authentication.BaseAuthentication):
             return None
 
         try:
+            # Extract the token
             token = auth_header.split(' ')[1]
-            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+            
+            # Decode the token
+            payload = jwt.decode(
+                token, 
+                settings.SECRET_KEY, 
+                algorithms=['HS256']
+            )
+            
+            # Get the user
             user = User.objects.get(id=payload['user_id'])
+            
             return (user, None)
+            
         except jwt.ExpiredSignatureError:
             raise exceptions.AuthenticationFailed('Token has expired')
-        except (jwt.InvalidTokenError, User.DoesNotExist):
+        except (jwt.InvalidTokenError, User.DoesNotExist, IndexError):
             raise exceptions.AuthenticationFailed('Invalid token')
+        except Exception as e:
+            print(f"Authentication error: {str(e)}")
+            raise exceptions.AuthenticationFailed('Authentication failed')
